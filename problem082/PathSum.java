@@ -5,6 +5,15 @@ import java.util.Arrays;
 
 public class PathSum {
 
+    static int[][] readFile(String fileName) {
+        try {
+            return Files.lines(Paths.get(fileName)).map(line -> Arrays.stream(line.split(",")).mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static int findMinimalPathSum(int[][] matrix) {
         int[][] costMatrix = new int[matrix.length][matrix[0].length];
         for (int i = 0; i < matrix.length; i++) {
@@ -26,15 +35,6 @@ public class PathSum {
             }
         }
         return minPathSum;
-    }
-
-    static int[][] readFile(String fileName) {
-        try {
-            return Files.lines(Paths.get(fileName)).map(line -> Arrays.stream(line.split(",")).mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static void main(String[] args) {
