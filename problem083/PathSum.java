@@ -88,7 +88,7 @@ public class PathSum {
 
         start.gScore = 0;
 
-        start.fScore = h(start, goal);
+        start.fScore = hScore(start, goal);
         // System.out.println(matrix[start.i][start.j]);
         openList.add(start);
 
@@ -100,7 +100,7 @@ public class PathSum {
             }
             for (Node neighbor : curr.neighbors) {
                 // System.out.println(matrix[neighbor.i][neighbor.j]);
-                int tentGScore = curr.gScore + d(curr);
+                int tentGScore = curr.gScore + weight(curr);
                 if (tentGScore < neighbor.gScore) {
 
                     if (cameFrom.containsKey(neighbor)) {
@@ -109,8 +109,8 @@ public class PathSum {
                         cameFrom.put(neighbor, curr);
                     }
                     
-                    neighbor.gScore = tentGScore + h(neighbor, goal);
-                    neighbor.fScore = tentGScore + h(neighbor, goal);
+                    neighbor.gScore = tentGScore;
+                    neighbor.fScore = tentGScore + hScore(neighbor, goal);
                     if (!openList.contains(neighbor)) {
                         openList.add(neighbor);
                     }
@@ -129,12 +129,12 @@ public class PathSum {
         return pathList;
     }
 
-    static int h(Node node, Node goal) {
+    static int hScore(Node node, Node goal) {
         // Manhattan distance from node to goal
         return Math.abs(node.i - goal.i) + Math.abs(node.j - goal.j);
     }
 
-    static int d(Node node) {
+    static int weight(Node node) {
         // weight of the edge from node to any of its neighbors
         return matrix[node.i][node.j];
     }
