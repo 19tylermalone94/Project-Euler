@@ -35,7 +35,7 @@ public class ProdSum {
     }
 
     static int findMinimalProSum(int k) {
-        for (int n = 1; n <= 2 * k; n++) {
+        for (int n = k; n <= 2 * k; n++) {
             for (List<Integer> factors : factorMap.get(n)) {
                 if (sum(factors) + k - factors.size() == n) {
                     return n;
