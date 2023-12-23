@@ -2,13 +2,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class Monopoly {
 
-
     List<Integer> posCounts = new ArrayList<Integer>(Collections.nCopies(40, 0));
     int dice = 4;
-
     Random rand = new Random();
     int position = 0;
     final int boardSize = 40;
@@ -82,51 +81,16 @@ public class Monopoly {
             }
             posCounts.set(position, posCounts.get(position) + 1);
         } while (doubles);
-        // posCounts.set(position, posCounts.get(position) + 1);
     }
 
-    public static List<Integer> findThreeLargestIndexes(List<Integer> numbers) {
-        // Initializing indexes to -1 as a default value
-        int firstMaxIndex = -1, secondMaxIndex = -1, thirdMaxIndex = -1;
-        Integer firstMax = null, secondMax = null, thirdMax = null;
-        for (int i = 0; i < numbers.size(); i++) {
-            int current = numbers.get(i);
-            if (firstMax == null || current > firstMax) {
-                thirdMax = secondMax;
-                thirdMaxIndex = secondMaxIndex;
-                secondMax = firstMax;
-                secondMaxIndex = firstMaxIndex;
-
-                firstMax = current;
-                firstMaxIndex = i;
-            } else if (secondMax == null || current > secondMax) {
-                thirdMax = secondMax;
-                thirdMaxIndex = secondMaxIndex;
-
-                secondMax = current;
-                secondMaxIndex = i;
-            } else if (thirdMax == null || current > thirdMax) {
-                thirdMax = current;
-                thirdMaxIndex = i;
-            }
-        }
-
-        List<Integer> indexes = new ArrayList<>();
-        if (firstMaxIndex != -1) indexes.add(firstMaxIndex);
-        if (secondMaxIndex != -1) indexes.add(secondMaxIndex);
-        if (thirdMaxIndex != -1) indexes.add(thirdMaxIndex);
-
-        return indexes;
-    }
-    
+public static List<Integer> findThreeLargestIndexes(List<Integer> numbers) {
+    return IntStream.range(0, numbers.size()).boxed().sorted((i, j) -> numbers.get(j) - numbers.get(i)).limit(3).toList();
+}
 
     public static void main(String[] args) {
         Monopoly game = new Monopoly();
         for (int i = 0; i < 1000000; ++i) {
             game.rollAndMove();
-        }
-        for (int i = 0; i < game.posCounts.size(); ++i) {
-            System.out.println(i + ": " + game.posCounts.get(i));
         }
         System.out.println(findThreeLargestIndexes(game.posCounts).toString());
     }
