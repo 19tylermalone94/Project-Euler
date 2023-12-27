@@ -14,14 +14,10 @@ public class Anagram {
 
     public static void main(String[] args) {
         loadSquares();
-        System.out.println(squares.get(5).contains(96721l));
         List<String> words = readFile("input.txt");
-
         long max = 0;
-        String bigWord = "";
         for (String word : words) {
             if (word.length() > 8) continue;
-            System.out.println(word);
             List<String> perms = new ArrayList<>();
             getWordPerms(perms, new ArrayList<>(Arrays.asList(word.split(""))), new ArrayList<>());
             perms = new ArrayList<>(new HashSet<>(perms));
@@ -60,7 +56,6 @@ public class Anagram {
                         if (squares.get(word.length()).contains(transNum)) {
                             if (transNum > max) {
                                 max = transNum;
-                                bigWord = word;
                             }
                         }
                     }
@@ -68,7 +63,6 @@ public class Anagram {
             }
         }
         System.out.println(max);
-        System.out.println(bigWord);
     }
 
     static void loadSquares() {
