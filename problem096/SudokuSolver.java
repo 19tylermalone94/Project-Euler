@@ -9,14 +9,11 @@ public class SudokuSolver {
 
     public static void main(String[] args) {
         List<String> content = readFile("input.txt");
-
         int sum = 0;
         for (String s : content) {
             List<Integer> board = s.lines().flatMap(line -> Arrays.stream(line.trim().split(""))).map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
             solve(board, 0, 0);
-
             sum += board.get(0)*100 + board.get(1)*10 + board.get(2);
-
             for (int row = 0; row < 9; ++row) {
                 for (int col = 0; col < 9; ++col) {
                     System.out.print(board.get(row * 9 + col) + " ");
@@ -25,16 +22,29 @@ public class SudokuSolver {
             }
             System.out.println();
         }
-
         System.out.println(sum);
     }
 
-    static List<String> readFile(String fileName) {
-        try {
-            return Arrays.stream(new String(Files.readAllBytes(Paths.get(fileName))).split("Grid \\d+\\n")).filter(s -> !s.isBlank()).toList();
-        } catch (IOException e) {
-            return null;
+    static boolean solve(List<Integer> board, int row, int col) {
+        if (row == 9) {
+            return !board.contains(0);
         }
+
+        if (board.get(row*9 + col) != 0) {
+            return solve(board, col + 1 == 9 ? row + 1 : row, (col + 1) % 9);
+        }
+
+        for (int element = 1; element <= 9; ++element) {
+            if (canPlace(row, col, element, board)) {
+                int e = board.get(row*9 + col);
+                board.set(row*9 + col, element);
+                if (solve(board, col + 1 == 9 ? row + 1 : row, (col + 1) % 9)) {
+                    return true;
+                }
+                board.set(row*9 + col, e);
+            }
+        }
+        return false;
     }
 
     static boolean canPlace(int row, int col, int element, List<Integer> board) {
@@ -68,25 +78,11 @@ public class SudokuSolver {
         return true;
     }
 
-    static boolean solve(List<Integer> board, int row, int col) {
-        if (row == 9) {
-            return !board.contains(0);
+    static List<String> readFile(String fileName) {
+        try {
+            return Arrays.stream(new String(Files.readAllBytes(Paths.get(fileName))).split("Grid \\d+\\n")).filter(s -> !s.isBlank()).toList();
+        } catch (IOException e) {
+            return null;
         }
-
-        if (board.get(row*9 + col) != 0) {
-            return solve(board, col + 1 == 9 ? row + 1 : row, (col + 1) % 9);
-        }
-
-        for (int element = 1; element <= 9; ++element) {
-            if (canPlace(row, col, element, board)) {
-                int e = board.get(row*9 + col);
-                board.set(row*9 + col, element);
-                if (solve(board, col + 1 == 9 ? row + 1 : row, (col + 1) % 9)) {
-                    return true;
-                }
-                board.set(row*9 + col, e);
-            }
-        }
-        return false;
     }
 }
